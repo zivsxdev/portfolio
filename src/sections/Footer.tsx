@@ -10,6 +10,7 @@ const navItem = [
     href: "#",
     label: "Projects",
   },
+ 
   {
     href: "#",
     label: "Testimonials",
@@ -18,6 +19,7 @@ const navItem = [
     href: "#",
     label: "Contect Me",
   },
+ 
 ];
 
 const Footer: FC = () => {
