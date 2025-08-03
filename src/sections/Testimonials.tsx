@@ -1,7 +1,6 @@
 "use client";
 
-import { FC, useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { FC, useRef, useState } from "react";
 
 import image1 from "@/assets/images/testimonial-1.jpg";
 import image2 from "@/assets/images/testimonial-4.jpg";
@@ -19,7 +18,7 @@ const testimonials = [
     name: "Khushi Bano",
     company: "Founder, Bake with Smile",
     quote:
-      "zivsxdev's skills in frontend development and eye for design helped us launch a stunning and fast website. It’s exactly what we needed.",
+      "zivsxdev's skills in frontend development and eye for design helped us launch a stunning and fast website. It's exactly what we needed.",
     image: image1,
     imagePositionY: 0.2,
   },
@@ -35,7 +34,7 @@ const testimonials = [
     name: "Vikas Kumar",
     company: "Gym Owner",
     quote:
-      "From heavy lifts to heavy clicks—thanks to zivsxdev, our gym’s vibe is now online. It’s sleek, fast, and built like a beast. Just like our workouts.",
+      "From heavy lifts to heavy clicks—thanks to zivsxdev, our gym's vibe is now online. It's sleek, fast, and built like a beast. Just like our workouts.",
     image: image3,
     imagePositionY: 0.55,
   },
@@ -43,11 +42,10 @@ const testimonials = [
 
 const Testimonials: FC = () => {
   const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  // ✅ Fix: Declare titleRef
   const titleRef = useRef(null);
 
-  // ✅ Fix: Scroll animation setup
   const { scrollYProgress } = useScroll({
     target: titleRef,
     offset: ["start end", "end start"],
@@ -57,18 +55,31 @@ const Testimonials: FC = () => {
   const transformBottom = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
   const handleClickPrev = () => {
+    if (isAnimating) return; // Prevent clicks during animation
+    setIsAnimating(true);
+    
     setTestimonialIndex((curr) => {
       if (curr === 0) {
         return testimonials.length - 1;
       }
       return curr - 1;
     });
+    
+    // Reset animation lock after a delay
+    setTimeout(() => setIsAnimating(false), 800);
   };
+
   const handleClickNext = () => {
+    if (isAnimating) return; // Prevent clicks during animation
+    setIsAnimating(true);
+    
     setTestimonialIndex((curr) => {
       if (curr === testimonials.length - 1) return 0;
       return curr + 1;
     });
+    
+    // Reset animation lock after a delay
+    setTimeout(() => setIsAnimating(false), 800);
   };
 
   return (
@@ -92,21 +103,15 @@ const Testimonials: FC = () => {
       </h2>
       <div className="container">
         <div className="mt-20">
-          <AnimatePresence mode="wait" initial={false}>
-            {testimonials.map(
-              ({ name, company, role, quote, image, imagePositionY }, index) =>
-                index === testimonialIndex && (
-                  <Testimonial
-                    name={name}
-                    company={company}
-                    role={role}
-                    quote={quote}
-                    image={image}
-                    imagePositionY={imagePositionY}
-                    key={testimonialIndex}
-                  />
-                )
-            )}
+          <AnimatePresence mode="wait">
+            <Testimonial
+              name={testimonials[testimonialIndex].name}
+              company={testimonials[testimonialIndex].company}
+              quote={testimonials[testimonialIndex].quote}
+              image={testimonials[testimonialIndex].image}
+              imagePositionY={testimonials[testimonialIndex].imagePositionY}
+              key={`testimonial-${testimonialIndex}-${testimonials[testimonialIndex].name}`}
+            />
           </AnimatePresence>
         </div>
         <div className="flex gap-4 mt-6 lg:mt-10">
@@ -114,6 +119,7 @@ const Testimonials: FC = () => {
             className="border border-stone-400 size-11 inline-flex items-center justify-center rounded-full
              hover:bg-red-orange-500 hover:text-white hover:border-red-orange-500 transition-all duration-300 "
             onClick={handleClickPrev}
+            disabled={isAnimating}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -135,6 +141,7 @@ const Testimonials: FC = () => {
             className="border border-stone-400 size-11 inline-flex items-center justify-center 
             rounded-full hover:bg-red-orange-500 hover:text-white hover:border-red-orange-500 transition-all duration-300"
             onClick={handleClickNext}
+            disabled={isAnimating}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

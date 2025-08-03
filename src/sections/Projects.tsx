@@ -6,7 +6,7 @@ import image1 from "@/assets/images/project-1.jpg";
 import image2 from "@/assets/images/project-2.jpg";
 import image3 from "@/assets/images/project-3.jpg";
 import image4 from "@/assets/images/project-4.jpg";
-import image5 from "@/assets/images/project-5.jpg";
+// import image5 from "@/assets/images/project-5.jpg";
 
 
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
@@ -27,10 +27,7 @@ const projects = [
     name: "Updating soon..",
     image: image4,
   },
-  {
-    name: "Updating soon..",
-    image: image5,
-  },
+ 
 ];
 
 const Projects: FC = () => {

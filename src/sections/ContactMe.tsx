@@ -1,10 +1,42 @@
 "use client";
 
 import { Mail } from "lucide-react";
+import { useState } from "react";
 
-const CONTACT_EMAIL = "zivsxdev@email.com";
+const CONTACT_EMAIL = "zivsxdev@gmail.com"; // Replace with your actual email
 
 export default function ContactMe() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(`https://formsubmit.co/${CONTACT_EMAIL}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        form.reset();
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section
       className="text-stone-900 max-w-sm md:max-w-md mx-auto px-2 py-10"
@@ -17,9 +49,20 @@ export default function ContactMe() {
         </p>
       </div>
 
+      {submitStatus === 'success' && (
+        <div className="mb-4 p-2 bg-green-100 border border-green-400 text-green-700 text-xs">
+          <p className="text-center">✅ Message sent successfully!</p>
+        </div>
+      )}
+
+      {submitStatus === 'error' && (
+        <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 text-xs">
+          <p className="text-center">❌ Please try again or email directly.</p>
+        </div>
+      )}
+
       <form
-        action={`https://formsubmit.co/${CONTACT_EMAIL}`}
-        method="POST"
+        onSubmit={handleSubmit}
         className="bg-stone-300 p-3 md:p-5 shadow-md space-y-3 md:space-y-4 border border-black"
         style={{
           clipPath:
@@ -27,6 +70,8 @@ export default function ContactMe() {
         }}
       >
         <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_subject" value="New Contact Form Submission from Portfolio" />
+        <input type="hidden" name="_template" value="table" />
 
         <div>
           <label className="block text-stone-900 mb-0.5 text-xs md:text-sm">
@@ -81,13 +126,18 @@ export default function ContactMe() {
 
         <button
           type="submit"
-          className="bg-orange-500 hover:bg-orange-600 transition-all duration-200 px-4 py-1.5 md:px-6 md:py-2 text-white text-sm md:text-base font-medium w-full"
+          disabled={isSubmitting}
+          className={`px-4 py-1.5 md:px-6 md:py-2 text-white text-sm md:text-base font-medium w-full transition-all duration-200 ${
+            isSubmitting 
+              ? 'bg-gray-400 cursor-not-allowed' 
+              : 'bg-orange-500 hover:bg-orange-600'
+          }`}
           style={{
             clipPath:
               "polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px))",
           }}
         >
-          Send Message
+          {isSubmitting ? 'Sending...' : 'Send Message'}
         </button>
       </form>
 
