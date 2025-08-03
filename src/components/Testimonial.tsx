@@ -1,10 +1,11 @@
-import { FC, HTMLAttributes, useEffect } from "react";
+import {  HTMLAttributes, useEffect } from "react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
-import { useAnimate ,usePresence} from "framer-motion";
-import SplitType from "split-type";
+import { usePresence, motion,  } from "framer-motion";
 import useTextRevealAnimation from "@/hooks/useTextRevealAnimation";
+
+
 
 const Testimonial = (
   props: {
@@ -20,7 +21,7 @@ const Testimonial = (
   const {
     quote,
     name,
-    role,
+
     company,
     imagePositionY,
     image,
@@ -28,55 +29,83 @@ const Testimonial = (
     ...rest
   } = props;
 
-  const { scope: quoteScope, entranceAnimation: quoteAnimate } = useTextRevealAnimation();
-  const { scope: citeScope, entranceAnimation: citeAnimate } = useTextRevealAnimation();
-const [isPresent, safeToRemove] = usePresence();
+  const {
+    scope: quoteScope,
+    entranceAnimation: quoteEntranceAnimation,
+    exitAnimation: quoteExitAnimation,
+  } = useTextRevealAnimation();
 
+  const {
+    scope: citeScope,
+    entranceAnimation: citeEntranceAnimation,
+    exitAnimation: citeExitAnimation,
+  } = useTextRevealAnimation();
+  const [isPresent, safeToRemove] = usePresence();
 
   useEffect(() => {
-    if(isPresent){
-    quoteEntranceAnimation().then(()=> {
-      citeEntranceAnimation();
-
-    });
-   } else{
-
-    };
-  }, []);
+    if (isPresent) {
+      quoteEntranceAnimation().then(() => {
+        citeEntranceAnimation();
+      });
+    } else {
+      Promise.all([quoteExitAnimation(), citeExitAnimation()]).then(() => {
+        safeToRemove();
+      });
+    }
+  }, [
+    citeEntranceAnimation,
+    citeExitAnimation,
+    isPresent,
+    quoteEntranceAnimation,
+    quoteExitAnimation,
+    safeToRemove,
+  ]);
 
   return (
     <div
-      {...rest}
+
       className={twMerge(
         "grid md:grid-cols-5 md:gap-8 lg:gap-16 md:items-center",
         className
       )}
+      {...rest}
     >
-      <div className="aspect-square md:aspect-[9/16] md:col-span-2">
+      {/* Image Section */}
+      <div className="aspect-square md:aspect-[9/16] md:col-span-2 relative overflow-hidden">
+        <motion.div
+          className="absolute h-full w-full bg-slate-900 z-10"
+          initial={{ width: "100%" }}
+          animate={{ width: 0 }}
+          exit={{ width: "100%" }}
+          transition={{ duration: 0.15 }}
+        />
         <Image
           src={image}
           alt={name}
+          priority
           className="size-full object-cover"
           style={{
             objectPosition: `50% ${imagePositionY * 100}%`,
           }}
         />
       </div>
+
+      {/* Quote Section */}
       <blockquote className="md:col-span-3">
         <div
-          className="text-3xl md:text-5xl lg:text-6xl mt-8 md:mt-0"
+          className="text-3xl md:text-5xl lg:text-6xl mt-8 md:mt-0 leading-tight"
           ref={quoteScope}
         >
           <span>&ldquo;</span>
-          <span>{quote}</span>
+          {quote}
           <span>&rdquo;</span>
-          <cite
-            className="block mt-4 md:mt-8 not-italic text-xl md:text-lg lg:text-xl text-gray-900"
-            ref={citeScope}
-          >
-            {name}, {role} at {company}
-          </cite>
         </div>
+        <cite
+          className="block mt-4 md:mt-8 not-italic text-xl md:text-lg lg:text-xl text-gray-900"
+          ref={citeScope}
+        >
+          {name}, {company}
+        </cite>
       </blockquote>
     </div>
   );

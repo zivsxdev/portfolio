@@ -1,35 +1,51 @@
+'use client'
 import Button from "@/components/Button";
+import useTextRevealAnimation from "@/hooks/useTextRevealAnimation";
+import { useInView } from "framer-motion";
 import { FC } from "react";
+import { useEffect } from "react";
 
 const navItem = [
   {
-    href: "#",
-    label: "Home",
+    href: "#home",
+    label: "About",
   },
   {
-    href: "#",
-    label: "Projects",
+    href: "#projects",
+    label: "Selected Works",
   },
  
   {
-    href: "#",
+    href: "#testimonials",
     label: "Testimonials",
   },
   {
-    href: "#",
-    label: "Contect Me",
+    href: "#faqs",
+    label: "FAQs",
+  },
+  {
+    href: "#contact",
+    label: "Contact Me",
   },
  
 ];
 
 const Footer: FC = () => {
-  return (
-    <footer className="bg-stone-900 text-white">
+  const { scope, entranceAnimation } = useTextRevealAnimation ();
+  const inView = useInView(scope);
+  useEffect(() =>{
+    if (inView){
+      entranceAnimation();
+    }
+   } ,[inView,entranceAnimation]);
+
+ return (
+    <footer className="bg-stone-900 text-white" id="contact">
       <div className="container">
         <div className="section">
           <div className="grid md:grid-cols-4 md:items-center">
             <div className="md:col-span-2">
-              <h2 className="py-10 text-4xl md:text-7xl mt-20 font-extralight">
+              <h2 className="py-10 text-4xl md:text-7xl mt-20 font-extralight" ref={scope}>
                 {" "}
                 Enough talk. Lets make something great together
               </h2>
