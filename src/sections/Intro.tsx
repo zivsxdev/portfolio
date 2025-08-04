@@ -30,7 +30,7 @@ const Intro: FC = () => {
         tagName: "span",
       });
     }
-  }, []); // run once on mount
+  }, [scope]); // run once on mount
 
   useEffect(() => {
     if (inView) {

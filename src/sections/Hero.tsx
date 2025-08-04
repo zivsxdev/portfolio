@@ -27,34 +27,37 @@ const Hero: FC = () => {
 
   const portraitWidth = useTransform(scrollYProgress, [0, 1], ["100%", "240%"]);
 
-  useEffect(() => {
-    if (!titleScope.current) return;
+useEffect(() => {
+  if (!titleScope.current) return;
 
-    const split = new SplitType(titleScope.current, {
-      types: "lines, words",
-      tagName: "span",
+  new SplitType(titleScope.current, {
+    types: "lines, words",
+    tagName: "span",
+  });
+
+  requestAnimationFrame(() => {
+    const words = titleScope.current?.querySelectorAll(".word");
+    if (!words) return;
+
+    words.forEach((word: HTMLElement) => {
+      word.style.transform = "translateY(100%)";
+      word.style.display = "inline-block";
     });
 
-    requestAnimationFrame(() => {
-      const words = titleScope.current?.querySelectorAll(".word");
-      if (!words) return;
+    titleAnimate(
+      words,
+      { transform: "translateY(0%)" },
+      {
+        duration: 0.5,
+        delay: stagger(0.05),
+        ease: "easeOut",
+      }
+    );
+  });
 
-      words.forEach((word) => {
-        (word as HTMLElement).style.transform = "translateY(100%)";
-        (word as HTMLElement).style.display = "inline-block";
-      });
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
-      titleAnimate(
-        words,
-        { transform: "translateY(0%)" },
-        {
-          duration: 0.5,
-          delay: stagger(0.05),
-          ease: "easeOut",
-        }
-      );
-    });
-  }, [titleScope, titleAnimate]);
 
   return (
     <section>
