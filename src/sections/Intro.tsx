@@ -26,7 +26,7 @@ const Intro: FC = () => {
     const h2 = scope.current?.querySelector("h2");
     if (h2) {
       new SplitType(h2, {
-        types: "lines, words",
+        types: "lines,words",
         tagName: "span",
       });
     }

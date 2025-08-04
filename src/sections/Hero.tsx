@@ -1,9 +1,8 @@
 "use client";
 
-import { FC, useEffect, useRef } from "react"; // ✅ Missing useEffect import
+import { FC, useEffect, useRef } from "react";
 import Image from "next/image";
 import SplitType from "split-type";
-
 import {
   motion,
   stagger,
@@ -17,7 +16,8 @@ import Button from "@/components/Button";
 import DecryptedText from "@/components/ui/DecryptedText";
 
 const Hero: FC = () => {
-  const [titleScope, titleAnimate] = useAnimate();
+  const [_, titleAnimate] = useAnimate(); // Only need the animate function
+  const titleRef = useRef<HTMLHeadingElement>(null); // DOM ref for SplitType
   const scrollingDiv = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -27,37 +27,39 @@ const Hero: FC = () => {
 
   const portraitWidth = useTransform(scrollYProgress, [0, 1], ["100%", "240%"]);
 
-useEffect(() => {
-  if (!titleScope.current) return;
+  useEffect(() => {
+    if (!titleRef.current) return;
 
-  new SplitType(titleScope.current, {
-    types: "lines, words",
-    tagName: "span",
-  });
-
-  requestAnimationFrame(() => {
-    const words = titleScope.current?.querySelectorAll(".word");
-    if (!words) return;
-
-    words.forEach((word: HTMLElement) => {
-      word.style.transform = "translateY(100%)";
-      word.style.display = "inline-block";
+    const split = new SplitType(titleRef.current, {
+      types: "lines,words",
+      tagName: "span",
     });
 
-    titleAnimate(
-      words,
-      { transform: "translateY(0%)" },
-      {
-        duration: 0.5,
-        delay: stagger(0.05),
-        ease: "easeOut",
-      }
-    );
-  });
+    requestAnimationFrame(() => {
+      const words = titleRef.current?.querySelectorAll(".word");
+      if (!words) return;
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+      words.forEach((word) => {
+        const element = word as HTMLElement;
+        element.style.transform = "translateY(100%)";
+        element.style.display = "inline-block";
+      });
 
+      titleAnimate(
+        words,
+        { transform: "translateY(0%)" },
+        {
+          duration: 0.5,
+          delay: stagger(0.05),
+          ease: "easeOut",
+        }
+      );
+    });
+
+    return () => {
+      split.revert(); // clean up SplitType
+    };
+  }, [titleAnimate]);
 
   return (
     <section>
@@ -86,7 +88,7 @@ useEffect(() => {
 
             {/* Sub-heading */}
             <motion.h3
-              ref={titleScope}
+              ref={titleRef}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="text-4xl mt-10 mb-10 md:text-5xl px-2"
@@ -152,7 +154,7 @@ useEffect(() => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.5,
-                  delay: 2, // Slight delay after the first button
+                  delay: 2,
                 }}
               >
                 <Button variant="text">Let&apos;s Talk</Button>
@@ -162,13 +164,15 @@ useEffect(() => {
         </div>
 
         {/* Right Side Image */}
-        <div className=" md:col-span-5 relative">
+        <div className="md:col-span-5 relative">
           <motion.div
-            className="mt-20 md:mt-0 md:size-full md:absolute md:right-0 max-md:!w-full "
-           style={{
-  width: typeof window !== "undefined" && window.innerWidth < 768 ? "100%" : portraitWidth,
-}}
-
+            className="mt-20 md:mt-0 md:size-full md:absolute md:right-0 max-md:!w-full"
+            style={{
+              width:
+                typeof window !== "undefined" && window.innerWidth < 768
+                  ? "100%"
+                  : portraitWidth,
+            }}
           >
             <Image
               src={heroImage}
@@ -178,23 +182,11 @@ useEffect(() => {
           </motion.div>
         </div>
       </div>
-      <div
-        className="md:h-[200vh] "
-        ref={scrollingDiv}
-      ></div>
+
+      {/* Scrollable Space */}
+      <div className="md:h-[200vh]" ref={scrollingDiv}></div>
     </section>
   );
 };
 
 export default Hero;
-
-
-
-
-
-
-
-
-
-
-
