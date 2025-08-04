@@ -1,6 +1,3 @@
-
-
-
 "use client";
 import { useEffect, useState, useRef } from 'react'
 
@@ -45,7 +42,7 @@ export default function DecryptedText({
   const containerRef = useRef(null);
 
   useEffect(() => {
-    let interval
+    let interval: NodeJS.Timeout | null = null
     let currentIteration = 0
 
     const getNextIndex = (revealedSet) => {
@@ -131,7 +128,7 @@ export default function DecryptedText({
               setDisplayText(shuffleText(text, newRevealed))
               return newRevealed
             } else {
-              clearInterval(interval)
+              if (interval) clearInterval(interval)
               setIsScrambling(false)
               return prevRevealed
             }
@@ -139,7 +136,7 @@ export default function DecryptedText({
             setDisplayText(shuffleText(text, prevRevealed))
             currentIteration++
             if (currentIteration >= maxIterations) {
-              clearInterval(interval)
+              if (interval) clearInterval(interval)
               setIsScrambling(false)
               setDisplayText(text)
             }
