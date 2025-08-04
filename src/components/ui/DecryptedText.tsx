@@ -45,10 +45,10 @@ export default function DecryptedText({
   const containerRef = useRef(null);
 
   useEffect(() => {
-    let interval
+    let interval: string | number | NodeJS.Timeout | undefined
     let currentIteration = 0
 
-    const getNextIndex = (revealedSet) => {
+    const getNextIndex = (revealedSet: Set<unknown>) => {
       const textLength = text.length
       switch (revealDirection) {
         case 'start':
