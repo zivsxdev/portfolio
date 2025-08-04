@@ -45,7 +45,7 @@ export default function DecryptedText({
     let interval: NodeJS.Timeout | null = null
     let currentIteration = 0
 
-    const getNextIndex = (revealedSet) => {
+    const getNextIndex = (revealedSet: Set<number>) => {
       const textLength = text.length
       switch (revealDirection) {
         case 'start':
@@ -78,7 +78,7 @@ export default function DecryptedText({
       ? Array.from(new Set(text.split(''))).filter((char) => char !== ' ')
       : characters.split('')
 
-    const shuffleText = (originalText, currentRevealed) => {
+    const shuffleText = (originalText: string, currentRevealed: Set<number>) => {
       if (useOriginalCharsOnly) {
         const positions = originalText.split('').map((char, i) => ({
           char,
@@ -167,7 +167,7 @@ export default function DecryptedText({
   useEffect(() => {
     if (animateOn !== 'view') return
 
-    const observerCallback = (entries) => {
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting && !hasAnimated) {
           setIsHovering(true)
