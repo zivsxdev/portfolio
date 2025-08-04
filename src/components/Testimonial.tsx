@@ -71,7 +71,7 @@ const Testimonial = (
       {/* Image Section */}
       <div className="aspect-square md:aspect-[9/16] md:col-span-2 relative overflow-hidden">
         <motion.div
-          className="absolute h-full w-full bg-slate-900 z-10"
+          className="absolute h-full w-full bg-slate-900 "
           initial={{ width: "100%" }}
           animate={{ width: 0 }}
           exit={{ width: "100%" }}

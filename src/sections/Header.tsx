@@ -131,7 +131,7 @@ const handleClickMobileNavItem = (e: React.MouseEvent<HTMLAnchorElement>) => {
   };
 
   return (
-    <header>
+    <header >
       <div
         className="fixed top-0 left-0 w-full h-0 overflow-hidden bg-stone-900 z-10 transition-all duration-700 ease-in-out "
         ref={navScope}
