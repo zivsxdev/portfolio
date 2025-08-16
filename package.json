@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.42.1",
+    "@clerk/express": "^1.7.21",
     "@tabler/icons-react": "^3.34.0",
+    "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cobe": "^0.6.4",
@@ -20,6 +23,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-github-calendar": "^4.5.9",
+    "react-hot-toast": "^2.6.0",
     "split-type": "^0.3.4",
     "swiper": "^11.2.9",
     "tailwind-merge": "^2.6.0",
