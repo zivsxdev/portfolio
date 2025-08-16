@@ -2,10 +2,13 @@ import { Eraser, Hash, Sparkles } from 'lucide-react'
 import React, { useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth } from '@clerk/nextjs';
 import {Toaster} from 'react-hot-toast'
 
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+// Set base URL for axios (Next.js uses different env variable naming)
+if (typeof window !== 'undefined') {
+  axios.defaults.baseURL = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+}
 const RemoveBackground = () => {
 
 

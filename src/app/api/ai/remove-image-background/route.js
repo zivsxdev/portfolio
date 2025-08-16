@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '../../../../middleware/auth';
+import { auth } from '@clerk/nextjs/server';
 
 export async function POST(request) {
     try {
-        // Note: In Next.js App Router, middleware works differently
-        // You would typically use Clerk's auth() helper here
-        // This is a placeholder structure for the API endpoint
+        const { userId } = auth();
+        
+        if (!userId) {
+            return NextResponse.json({
+                success: false,
+                message: "Authentication required"
+            }, { status: 401 });
+        }
         
         const formData = await request.formData();
         const image = formData.get('image');
@@ -23,10 +28,10 @@ export async function POST(request) {
         // 2. Using an AI service to remove background
         // 3. Returning the processed image URL
         
-        // Placeholder response
+        // For now, return a placeholder success response
         return NextResponse.json({
             success: true,
-            content: "data:image/png;base64,placeholder", // This should be the actual processed image
+            content: "https://via.placeholder.com/400x300/ffffff/000000?text=Background+Removed", // Placeholder image
             message: "Background removed successfully"
         });
         
